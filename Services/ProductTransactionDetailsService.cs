@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using MySql.Data.MySqlClient;
 using PMS.DTOs;
 using PMS.Models;
 using PMS.Repository;
@@ -47,35 +48,53 @@ namespace PMS.Services
             _repository.Delete(model);
         }
 
-        public async Task InsertTransactionDetailsAsync(ProductTransactionDetail model)
+        public async Task InsertTransactionDetailsAsync1(ProductTransactionDetail model)
         {
-            var storedProcedure = "EXEC Sp_Create_TransactionDetails";
+            var storedProcedure = "Call Sp_Create_TransactionDetails(@ProductId, @BarcodeNo, @PerchaseQuantity, @ShelfNo, @RackNo, @PurchaseSellDate, @PurchasePrice, @SellingPrice)";
 
             //string storedProcedureName = "GetMyData";
             var parameters = new[]
             {
-            new SqlParameter("@ProductId", SqlDbType.Int) { Value = model.ProductId },
-            new SqlParameter("@BarcodeNo", SqlDbType.NVarChar) { Value = model.BarcodeNo },
-            new SqlParameter("@PerchaseQuantity", SqlDbType.Int) { Value = model.PerchaseQuantity },
-            new SqlParameter("@ShelfNo", SqlDbType.NVarChar) { Value = model.ShelfNo },
-            new SqlParameter("@RackNo", SqlDbType.NVarChar) { Value = model.RackNo },
-            new SqlParameter("@PurchaseSellDate", SqlDbType.DateTime) { Value = model.PurchaseSellDate },
-            new SqlParameter("@PurchasePrice", SqlDbType.Decimal) { Value = model.PurchasePrice },
-            new SqlParameter("@SellingPrice", SqlDbType.Decimal) { Value = model.SellingPrice }
+            new MySqlParameter("@ProductId", MySqlDbType.Int32) { Value = model.ProductId },
+            new MySqlParameter("@BarcodeNo", MySqlDbType.VarChar) { Value = model.BarcodeNo },
+            new MySqlParameter("@PerchaseQuantity", MySqlDbType.Int32) { Value = model.PerchaseQuantity },
+            new MySqlParameter("@ShelfNo", MySqlDbType.VarChar) { Value = model.ShelfNo },
+            new MySqlParameter("@RackNo", MySqlDbType.VarChar) { Value = model.RackNo },
+            new MySqlParameter("@PurchaseSellDate", MySqlDbType.VarChar) { Value = model.PurchaseSellDate },
+            new MySqlParameter("@PurchasePrice", MySqlDbType.Decimal) { Value = model.PurchasePrice },
+            new MySqlParameter("@SellingPrice", MySqlDbType.Decimal) { Value = model.SellingPrice }
 
              };
             //await _repository.ExecuteStoredProcedureAsync<ProductTransactionDetail>(storedProcedure, parameters);
             await _repository.ExecuteStoredProcedure<ProductTransactionDetail>(storedProcedure, parameters);
         }
 
+        public async Task<int> InsertTransactionDetailsAsync(ProductTransactionDetail model)
+        {
+            var parameters = new MySqlParameter[]
+            {
+            new MySqlParameter("@ProductId", model.ProductId),
+            new MySqlParameter("@BarcodeNo", model.BarcodeNo),
+            new MySqlParameter("@PerchaseQuantity", model.PerchaseQuantity),
+            new MySqlParameter("@ShelfNo", model.ShelfNo),
+            new MySqlParameter("@RackNo", model.RackNo),
+            new MySqlParameter("@PurchaseSellDate", model.PurchaseSellDate),
+            new MySqlParameter("@PurchasePrice", model.PurchasePrice),
+            new MySqlParameter("@SellingPrice", model.SellingPrice)
+            };
+
+            var result = await _repository.ExecuteStoredProcedureNonQueryAsync("Sp_Create_TransactionDetails", parameters);
+            return result; // This returns the number of rows affected
+        }
+
         public async Task<IEnumerable<ProductTransactionListDtos>> Sp_GetReceivedTransactionDetailsAsync(string ActionType,string barcodeNo)
         {
          
-            string storedProcedure = "EXEC Sp_Get_TransactionDetails @Action_type, @BarcodeNo";
+            string storedProcedure = "call Sp_Get_TransactionDetails (@Action_type, @BarcodeNo)";
             var parameters = new[]
            {
-            new SqlParameter("@Action_type", SqlDbType.NVarChar) { Value = ActionType },
-            new SqlParameter("@BarcodeNo", SqlDbType.NVarChar) { Value = barcodeNo }
+            new MySqlParameter("@Action_type", MySqlDbType.VarChar) { Value = ActionType },
+            new MySqlParameter("@BarcodeNo", MySqlDbType.VarChar) { Value = barcodeNo }
              };
 
             var ReceivedProductDetails = await _repository.ExecuteStoredProcedureAsync<ProductTransactionListDtos>(storedProcedure, parameters);
@@ -85,11 +104,11 @@ namespace PMS.Services
         public async Task<IEnumerable<ProductDetailsByBarcodeDtos>> Sp_GetTransactionDetailsByBarcodeNoAsync(string ActionType, string barcodeNo)
         {
 
-            string storedProcedure = "EXEC Sp_Get_TransactionDetails @Action_type, @BarcodeNo";
+            string storedProcedure = "call Sp_Get_TransactionDetails (@Action_type, @BarcodeNo)";
             var parameters = new[]
            {
-            new SqlParameter("@Action_type", SqlDbType.NVarChar) { Value = ActionType },
-            new SqlParameter("@BarcodeNo", SqlDbType.NVarChar) { Value = barcodeNo }
+            new MySqlParameter("@Action_type", MySqlDbType.VarChar) { Value = ActionType },
+            new MySqlParameter("@BarcodeNo", MySqlDbType.VarChar) { Value = barcodeNo }
              };
 
             var ReceivedProductDetails = await _repository.ExecuteStoredProcedureAsync<ProductDetailsByBarcodeDtos>(storedProcedure, parameters);

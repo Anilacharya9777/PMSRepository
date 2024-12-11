@@ -2,6 +2,7 @@
 using PMS.DTOs;
 using PMS.Models;
 using PMS.Services;
+using System;
 
 namespace PMS.Controllers
 {
@@ -76,7 +77,12 @@ namespace PMS.Controllers
                             model.PerchaseQuantity = Convert.ToInt32(productTransaction.Rows[i].Quantity);
                             model.ShelfNo = productTransaction.Rows[i].ShelfNo;
                             model.RackNo = productTransaction.Rows[i].RackNo;
-                            model.PurchaseSellDate = Convert.ToDateTime(productTransaction.Rows[i].PurchaseDate);
+                            if (DateTime.TryParse(productTransaction.Rows[i].PurchaseDate, out DateTime purchaseDate))
+                            {
+                                string formattedDate = purchaseDate.ToString("yyyy-MM-dd");
+                                model.PurchaseSellDate = purchaseDate; // Assign raw DateTime if valid
+                            }
+                            // model.PurchaseSellDate = Convert.ToDateTime(productTransaction.Rows[i].PurchaseDate);
                             model.TransactionDate = System.DateTime.Now;
                             model.TransactionType = "Received";
                             model.PurchasePrice = Convert.ToDecimal(productTransaction.Rows[i].PurchasePrice);

@@ -17,7 +17,7 @@ namespace PMS.Services
         {
             //var storedProcedure = "EXEC SP_GetBrandDetailsWithCategory";
             //return await _repository.ExecuteStoredProcedureAsync<BrandDetailsDto>(storedProcedure);
-            string storedProcedure = "EXEC SP_GetBrandDetailsWithCategory";
+            string storedProcedure = "call SP_GetBrandDetailsWithCategory()";
             var parameters = new object[] { };
 
             var brandDetails = await _repository.ExecuteStoredProcedureAsync<BrandDetailsDto>(storedProcedure, parameters);
@@ -53,7 +53,7 @@ namespace PMS.Services
         {
             //var storedProcedure = "EXEC SP_GetBrandDetailsWithCategory";
             //return await _repository.ExecuteStoredProcedureAsync<BrandDetailsDto>(storedProcedure);
-            string storedProcedure = "EXEC SP_GetBrandDetailsWithCategoryByAction @ActionType={0}, @Category_Id={1}";
+            string storedProcedure = "Call SP_GetBrandDetailsWithCategoryByAction(@ActionType={0}, @Category_Id={1})";
             var parameters = new object[] { ActionType, Category_Id };
             //        var parameters = new[]
             // {

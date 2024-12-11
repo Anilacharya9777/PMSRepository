@@ -15,7 +15,7 @@ namespace PMS.Services
         {
             //var storedProcedure = "EXEC SP_GetBrandDetailsWithCategory";
             //return await _repository.ExecuteStoredProcedureAsync<BrandDetailsDto>(storedProcedure);
-            string storedProcedure = "EXEC [SP_GetProductTypeDetails]";
+            string storedProcedure = "Call SP_GetProductTypeDetails()";
             var parameters = new object[] { };
 
             var productTypeDetails = await _repository.ExecuteStoredProcedureAsync<ProductTypeDetailsDto>(storedProcedure, parameters);

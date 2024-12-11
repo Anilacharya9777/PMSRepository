@@ -7,8 +7,13 @@ using System.Reflection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+
+//builder.Services.AddDbContext<ProductManagementContext>(options =>
+//    options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+
 builder.Services.AddDbContext<ProductManagementContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MyConnection")));
+    options.UseMySQL(builder.Configuration.GetConnectionString("MyConnection")));
+
 //builder.Services.AddControllersWithViews(); //27-11
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

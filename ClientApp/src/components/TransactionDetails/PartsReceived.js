@@ -21,7 +21,7 @@ function PartsReceived() {
   const [reload, setReload] = useState(true);
 
   useEffect(() => {
-    axios.get("https://localhost:7252/api/ProductTransactionMaster/GetReceivedProductTransaction?ActionType=Received_Grid")
+    axios.get(`https://localhost:7252/api/ProductTransactionMaster/GetReceivedProductTransaction?ActionType=Received_Grid&barcodeNo=""`)
       .then((res) => {
         setLoading(false);
         setError("");

@@ -29,7 +29,8 @@ namespace PMS.Models
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlServer("Name=MyConnection");
+                //optionsBuilder.UseSqlServer("Name=MyConnection");
+                optionsBuilder.UseMySQL("Name=MyConnection");
             }
         }
 
