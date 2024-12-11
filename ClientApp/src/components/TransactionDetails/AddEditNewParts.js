@@ -103,6 +103,17 @@ function AddEditNewParts() {
         debugger
         if (res.data==="Success") {
           toast.success("Parts submitted successfully!");
+          setRows([
+            {
+              barcodeNo: "",
+              quantity: "",
+              purchasePrice: "",
+              sellingPrice: "",
+              rackNo: "",
+              shelfNo: "",
+              purchaseDate: ""
+            }
+            ]);
         }
       }).catch((err) => { console.log(err) })
    

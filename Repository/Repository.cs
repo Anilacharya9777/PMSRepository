@@ -4,6 +4,7 @@ using System.Linq.Expressions;
 using System.Linq;
 using PMS.DTOs;
 using Microsoft.Data.SqlClient;
+using MySql.Data.MySqlClient;
 
 namespace PMS.Repository
 {
@@ -82,11 +83,27 @@ namespace PMS.Repository
             return await query.ToListAsync();
         }
 
-        public async Task ExecuteStoredProcedure<T>(string storedProcedure, params SqlParameter[] parameters)
+        public async Task ExecuteStoredProcedure<T>(string storedProcedure, params MySqlParameter[] parameters)
         {
             var sql = storedProcedure + " " + string.Join(", ", parameters.Select(p => p.ParameterName));
 
             await _context.Database.ExecuteSqlRawAsync(sql, parameters);
+        }
+
+        public async Task<int> ExecuteStoredProcedureNonQueryAsync(string storedProcedure, params MySqlParameter[] parameters)
+        {
+            try
+            {
+                var parameterNames = string.Join(", ", parameters.Select(p => p.ParameterName));
+                var sqlCommand = $"CALL {storedProcedure}({parameterNames})";
+
+                var result = await _context.Database.ExecuteSqlRawAsync(sqlCommand, parameters);
+                return result;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while executing the stored procedure: {ex.Message}", ex);
+            }
         }
 
     }
